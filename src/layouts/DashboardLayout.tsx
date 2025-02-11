@@ -9,9 +9,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-black text-white' : 'bg-white text-black'}`}>
       <Navbar />
-      <div className="flex pt-16">
+      <div className="flex">
         <Sidebar />
-        <main className="flex-1 p-6 ml-64">
+        <main className="flex-1 p-6 ml-64 mt-16">
           {children}
         </main>
       </div>

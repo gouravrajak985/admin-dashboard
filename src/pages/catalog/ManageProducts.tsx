@@ -1,6 +1,7 @@
 import React from 'react';
 import { ExternalLink, Edit, Trash2 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { useNavigate } from 'react-router-dom';
 
 const products = [
   {
@@ -43,6 +44,7 @@ const products = [
 
 const ManageProducts = () => {
   const { theme } = useTheme();
+  const navigate = useNavigate();
 
   return (
     <div className={`border ${
@@ -51,11 +53,14 @@ const ManageProducts = () => {
       <div className="p-6 border-b border-gray-200 dark:border-gray-800">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold">Manage Products</h2>
-          <button className={`px-4 py-2 border ${
-            theme === 'dark' 
-              ? 'border-gray-800 hover:bg-gray-900' 
-              : 'border-gray-200 hover:bg-gray-50'
-          }`}>
+          <button 
+            onClick={() => navigate('/catalog/new-product')}
+            className={`px-4 py-2 border ${
+              theme === 'dark' 
+                ? 'border-gray-800 hover:bg-gray-900' 
+                : 'border-gray-200 hover:bg-gray-50'
+            }`}
+          >
             Add New Product
           </button>
         </div>

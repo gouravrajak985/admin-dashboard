@@ -11,7 +11,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 h-16 ${
+    <nav className={`fixed top-0 left-64 right-0 h-16 ${
       theme === 'dark' ? 'bg-black border-gray-800' : 'bg-white border-gray-200'
     } border-b px-4 flex items-center justify-between z-10`}>
       <div className="flex-1 max-w-xl">
@@ -66,7 +66,7 @@ const Navbar = () => {
             <img
               src={user.avatar}
               alt={user.name}
-              className="h-8 w-8"
+              className="h-8 w-8 rounded-full"
             />
             <div className="text-left hidden md:block">
               <p className="text-sm font-medium">{user.name}</p>

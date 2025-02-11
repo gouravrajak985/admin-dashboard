@@ -4,6 +4,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import ManageProducts from './pages/catalog/ManageProducts';
+import NewProduct from './pages/catalog/NewProduct';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/catalog/manage-products" element={<ManageProducts />} />
+            <Route path="/catalog/new-product" element={<NewProduct />} />
           </Routes>
         </DashboardLayout>
       </Router>
