@@ -105,7 +105,7 @@ const Sidebar = () => {
       }`}>
         {/* Header */}
         <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-800">
-          <h1 className="text-xl font-bold">Admin Panel</h1>
+          <h1 className="text-xl font-bold">Avirrav Ecommerce</h1>
         </div>
 
         {/* Navigation */}
@@ -134,7 +134,7 @@ const Sidebar = () => {
               icon={ShoppingBag} 
               label="Orders" 
               subItems={['Manage Orders', 'Add Order']}
-              subItemPaths={['/orders/manage', '/orders/new']}
+              subItemPaths={['/orders/manage-orders', '/orders/new-order']}
               isActive={location.pathname.startsWith('/orders')}
               id="orders"
               onToggle={handleMenuToggle}

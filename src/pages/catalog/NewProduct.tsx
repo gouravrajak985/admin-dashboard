@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
-import { Upload, X, Plus } from 'lucide-react';
+import { Upload, X, Plus,  Minus, Save, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface Tax {
   id: string;
@@ -10,6 +11,7 @@ interface Tax {
 
 const NewProduct = () => {
   const { theme } = useTheme();
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -88,7 +90,17 @@ const NewProduct = () => {
       theme === 'dark' ? 'bg-black border-gray-800' : 'bg-white border-gray-200'
     }`}>
       <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+      <div className="flex items-center">
+        <button
+            onClick={() => navigate('/catalog/manage-products')}
+            className={`p-2 mr-4 border ${
+              theme === 'dark' ? 'border-gray-800 hover:bg-gray-900' : 'border-gray-200 hover:bg-gray-50'
+            }`}
+          >
+            <ArrowLeft className="h-5 w-5" />
+        </button>
         <h2 className="text-xl font-semibold">New Product</h2>
+        </div>
       </div>
 
       <div className="p-6 space-y-6">

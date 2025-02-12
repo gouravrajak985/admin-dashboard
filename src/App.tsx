@@ -18,8 +18,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/catalog/manage-products" element={<ManageProducts />} />
             <Route path="/catalog/new-product" element={<NewProduct />} />
-            <Route path="/orders/manage" element={<ManageOrders />} />
-            <Route path="/orders/new" element={<NewOrder />} />
+            <Route path="/orders/manage-orders" element={<ManageOrders />} />
+            <Route path="/orders/new-order" element={<NewOrder />} />
           </Routes>
         </DashboardLayout>
       </Router>

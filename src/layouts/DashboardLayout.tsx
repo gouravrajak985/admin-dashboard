@@ -18,7 +18,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               <LayoutDashboard className="h-8 w-8 mr-2" />
               <h1 className="text-2xl font-bold">Admin Panel</h1>
             </div>
-            <p className="text-sm text-gray-500">Developed by Avirrav</p>
+            {/* <p className="text-sm text-gray-500">Developed by Avirrav</p> */}
           </div>
           {children}
         </main>
