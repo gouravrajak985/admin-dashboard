@@ -1,5 +1,5 @@
-import React from 'react';
-import { ExternalLink, Edit, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { ExternalLink, Edit, Trash2, ArrowLeft, Search } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -45,24 +45,75 @@ const products = [
 const ManageProducts = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         product.sku.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = !statusFilter || product.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className={`border ${
       theme === 'dark' ? 'bg-black border-gray-800' : 'bg-white border-gray-200'
     }`}>
       <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Manage Products</h2>
-          <button 
-            onClick={() => navigate('/catalog/new-product')}
-            className={`px-4 py-2 border ${
-              theme === 'dark' 
-                ? 'border-gray-800 hover:bg-gray-900' 
-                : 'border-gray-200 hover:bg-gray-50'
+        <div className="flex items-center mb-4">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className={`p-2 mr-4 border ${
+              theme === 'dark' ? 'border-gray-800 hover:bg-gray-900' : 'border-gray-200 hover:bg-gray-50'
             }`}
           >
-            Add New Product
+            <ArrowLeft className="h-5 w-5" />
           </button>
+          <h2 className="text-xl font-semibold">Manage Products</h2>
+        </div>
+
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 md:space-x-4">
+          <div className="flex-1 w-full md:w-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`w-full pl-10 pr-4 py-2 border ${
+                  theme === 'dark' 
+                    ? 'bg-gray-900 border-gray-800' 
+                    : 'bg-white border-gray-200'
+                }`}
+              />
+            </div>
+          </div>
+          <div className="flex space-x-4 w-full md:w-auto">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className={`px-4 py-2 border ${
+                theme === 'dark' 
+                  ? 'bg-gray-900 border-gray-800' 
+                  : 'bg-white border-gray-200'
+              }`}
+            >
+              <option value="">All Status</option>
+              <option value="Live">Live</option>
+              <option value="Saved">Saved</option>
+            </select>
+            <button 
+              onClick={() => navigate('/catalog/new-product')}
+              className={`px-4 py-2 border ${
+                theme === 'dark' 
+                  ? 'border-gray-800 hover:bg-gray-900' 
+                  : 'border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              Add New Product
+            </button>
+          </div>
         </div>
       </div>
 
@@ -85,7 +136,7 @@ const ManageProducts = () => {
           <tbody className={`divide-y ${
             theme === 'dark' ? 'divide-gray-800' : 'divide-gray-200'
           }`}>
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <tr key={product.id} className={
                 theme === 'dark' ? 'hover:bg-gray-900' : 'hover:bg-gray-50'
               }>
