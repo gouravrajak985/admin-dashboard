@@ -144,7 +144,7 @@ const Sidebar = () => {
               icon={Users} 
               label="Customers" 
               subItems={['Manage Customers', 'Add Customer']}
-              subItemPaths={['/customers/manage', '/customers/new']}
+              subItemPaths={['/customers/manage-customers', '/customers/new-customer']}
               isActive={location.pathname.startsWith('/customers')}
               id="customers"
               onToggle={handleMenuToggle}

@@ -7,6 +7,8 @@ import ManageProducts from './pages/catalog/ManageProducts';
 import NewProduct from './pages/catalog/NewProduct';
 import ManageOrders from './pages/orders/ManageOrders';
 import NewOrder from './pages/orders/NewOrder';
+import NewCustomer from './pages/customers/NewCustomer';
+import ManageCustomers from './pages/customers/ManageCustomers';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
             <Route path="/catalog/new-product" element={<NewProduct />} />
             <Route path="/orders/manage-orders" element={<ManageOrders />} />
             <Route path="/orders/new-order" element={<NewOrder />} />
+            <Route path="/customers/new-customer" element={<NewCustomer />} />
+            <Route path="/customers/manage-customers" element={<ManageCustomers />} />
           </Routes>
         </DashboardLayout>
       </Router>

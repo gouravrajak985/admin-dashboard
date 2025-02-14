@@ -1,0 +1,180 @@
+import React, { useState } from 'react';
+import { useTheme } from '../../context/ThemeContext';
+import { Eye, Edit, Trash2, ArrowLeft, Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+interface Customer {
+  id: string;
+  customerName: string;
+  userName: string;
+  email: string;
+  orders: number;
+  status: 'Active' | 'Inactive';
+  createdAt: string;
+}
+
+const customers: Customer[] = [
+  {
+    id: 'CUST-001',
+    customerName: 'John Doe',
+    userName: 'johndoe',
+    email: 'john.doe@example.com',
+    orders: 12,
+    status: 'Active',
+    createdAt: '2024-01-15'
+  },
+  {
+    id: 'CUST-002',
+    customerName: 'Jane Smith',
+    userName: 'janesmith',
+    email: 'jane.smith@example.com',
+    orders: 5,
+    status: 'Inactive',
+    createdAt: '2023-11-20'
+  },
+  {
+    id: 'CUST-003',
+    customerName: 'Mike Johnson',
+    userName: 'mikejohnson',
+    email: 'mike.johnson@example.com',
+    orders: 20,
+    status: 'Active',
+    createdAt: '2024-02-01'
+  },
+  {
+    id: 'CUST-004',
+    customerName: 'Sarah Williams',
+    userName: 'sarahwilliams',
+    email: 'sarah.williams@example.com',
+    orders: 8,
+    status: 'Inactive',
+    createdAt: '2023-12-10'
+  }
+];
+
+const getStatusColor = (status: Customer['status']) => {
+  return status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+};
+
+const ManageCustomers = () => {
+  const { theme } = useTheme();
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredCustomers = customers.filter(customer => {
+    const matchesSearch = customer.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           customer.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           customer.email.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesSearch;
+  });
+
+  return (
+    <div className={`border ${
+      theme === 'dark' ? 'bg-black border-gray-800' : 'bg-white border-gray-200'
+    }`}>
+      <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex items-center mb-4">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className={`p-2 mr-4 border ${
+              theme === 'dark' ? 'border-gray-800 hover:bg-gray-900' : 'border-gray-200 hover:bg-gray-50'
+            }`}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <h2 className="text-xl font-semibold">Manage Customers</h2>
+        </div>
+
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 md:space-x-4">
+          <div className="flex-1 w-full md:w-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search customers..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`w-full pl-10 pr-4 py-2 border ${
+                  theme === 'dark' 
+                    ? 'bg-gray-900 border-gray-800' 
+                    : 'bg-white border-gray-200'
+                }`}
+              />
+            </div>
+          </div>
+          <div className="flex space-x-4 w-full md:w-auto">
+            <button 
+              onClick={() => navigate('/customers/new')}
+              className={`px-4 py-2 ${
+                theme === 'dark' ? 'bg-gray-900' : 'bg-black'
+              } text-white hover:opacity-90`}
+            >
+              Add Customer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className={`${
+            theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
+          } border-b ${
+            theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
+          }`}>
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Orders</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created At</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody className={`divide-y ${
+            theme === 'dark' ? 'divide-gray-800' : 'divide-gray-200'
+          }`}>
+            {filteredCustomers.map((customer) => (
+              <tr key={customer.id} className={
+                theme === 'dark' ? 'hover:bg-gray-900' : 'hover:bg-gray-50'
+              }>
+                <td className="px-6 py-4">{customer.customerName}</td>
+                <td className="px-6 py-4">{customer.userName}</td>
+                <td className="px-6 py-4">{customer.email}</td>
+                <td className="px-6 py-4">{customer.orders}</td>
+                <td className="px-6 py-4">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(customer.status)}`}>
+                    {customer.status}
+                  </span>
+                </td>
+                <td className="px-6 py-4">{customer.createdAt}</td>
+                <td className="px-6 py-4">
+                  <div className="flex space-x-3">
+                    <button className={`p-2 border ${
+                      theme === 'dark' ? 'border-gray-800 hover:bg-gray-800' : 'border-gray-200 hover:bg-gray-100'
+                    }`}>
+                      <Eye className="h-4 w-4" />
+                    </button>
+                    <button className={`p-2 border ${
+                      theme === 'dark' ? 'border-gray-800 hover:bg-gray-800' : 'border-gray-200 hover:bg-gray-100'
+                    }`}>
+                      <Edit className="h-4 w-4" />
+                    </button>
+                    <button className={`p-2 border ${
+                      theme === 'dark' ? 'border-gray-800 hover:bg-gray-800' : 'border-gray-200 hover:bg-gray-100'
+                    }`}>
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default ManageCustomers;
