@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
-import { Upload, X, Plus,  Minus, Save, ArrowLeft } from 'lucide-react';
+import { Upload, X, Plus, Save, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface Tax {
@@ -73,33 +73,27 @@ const NewProduct = () => {
     });
   };
 
-  const inputClassName = `w-full p-2 border ${
+  const inputClassName = `w-full p-2 border rounded-md ${
     theme === 'dark'
       ? 'bg-gray-900 border-gray-800 text-white'
-      : 'bg-white border-gray-200 text-black'
-  } focus:outline-none focus:ring-2 ${theme === 'dark' ? 'focus:ring-gray-600' : 'focus:ring-gray-200'} focus:border-gray-900`;
-
-  const buttonClassName = `px-4 py-2 border ${
-    theme === 'dark'
-      ? 'border-gray-800 hover:bg-gray-900'
-      : 'border-gray-200 hover:bg-gray-50'
-  }`;
+      : 'bg-white border-shopify-border text-black'
+  } focus:outline-none focus:ring-2 ${theme === 'dark' ? 'focus:ring-gray-600' : 'focus:ring-shopify-focus'} focus:border-shopify-focus`;
 
   return (
-    <div className={`border ${
-      theme === 'dark' ? 'bg-black border-gray-800' : 'bg-white border-gray-200'
+    <div className={`border rounded-lg ${
+      theme === 'dark' ? 'bg-black border-gray-800' : 'bg-white border-shopify-border'
     }`}>
-      <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-      <div className="flex items-center">
-        <button
+      <div className="p-6 border-b border-shopify-border dark:border-gray-800">
+        <div className="flex items-center">
+          <button
             onClick={() => navigate('/catalog/manage-products')}
-            className={`p-2 mr-4 border ${
-              theme === 'dark' ? 'border-gray-800 hover:bg-gray-900' : 'border-gray-200 hover:bg-gray-50'
+            className={`p-2 mr-4 border rounded-md ${
+              theme === 'dark' ? 'border-gray-800 hover:bg-gray-900' : 'border-shopify-border hover:bg-shopify-surface'
             }`}
           >
             <ArrowLeft className="h-5 w-5" />
-        </button>
-        <h2 className="text-xl font-semibold">New Product</h2>
+          </button>
+          <h2 className="text-xl font-semibold">New Product</h2>
         </div>
       </div>
 
@@ -108,15 +102,15 @@ const NewProduct = () => {
         <div className="space-y-2">
           <label className="block text-sm font-medium">Product Image</label>
           <div className="flex items-center space-x-4">
-            <div className={`w-32 h-32 border-2 border-dashed flex items-center justify-center ${
-              theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
+            <div className={`w-32 h-32 border-2 border-dashed rounded-lg flex items-center justify-center ${
+              theme === 'dark' ? 'border-gray-800' : 'border-shopify-border'
             }`}>
               {imagePreview ? (
                 <div className="relative w-full h-full">
                   <img
                     src={imagePreview}
                     alt="Preview"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg"
                   />
                   <button
                     onClick={() => setImagePreview(null)}
@@ -133,11 +127,11 @@ const NewProduct = () => {
                     accept="image/*"
                     onChange={handleImageUpload}
                   />
-                  <Upload className="w-8 h-8 text-gray-400" />
+                  <Upload className="w-8 h-8 text-shopify-text-secondary" />
                 </label>
               )}
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-shopify-text-secondary">
               <p>Upload a product image</p>
               <p>Recommended size: 800x800px</p>
             </div>
@@ -205,7 +199,11 @@ const NewProduct = () => {
               />
               <button
                 onClick={handleAddTax}
-                className={`${buttonClassName} flex items-center`}
+                className={`p-2 border rounded-md ${
+                  theme === 'dark'
+                    ? 'border-gray-800 hover:bg-gray-900'
+                    : 'border-shopify-border hover:bg-shopify-surface'
+                }`}
               >
                 <Plus className="w-4 h-4" />
               </button>
@@ -216,8 +214,8 @@ const NewProduct = () => {
               {taxes.map((tax) => (
                 <div
                   key={tax.id}
-                  className={`flex items-center justify-between p-2 border ${
-                    theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
+                  className={`flex items-center justify-between p-2 border rounded-md ${
+                    theme === 'dark' ? 'border-gray-800' : 'border-shopify-border'
                   }`}
                 >
                   <span>{tax.name} ({tax.percentage}%)</span>
@@ -238,7 +236,7 @@ const NewProduct = () => {
             <input
               type="number"
               value={finalPrice.toFixed(2)}
-              className={`${inputClassName} bg-gray-100`}
+              className={`${inputClassName} bg-shopify-surface`}
               disabled
             />
           </div>
@@ -261,13 +259,17 @@ const NewProduct = () => {
         <div className="flex justify-end space-x-4 pt-6">
           <button
             onClick={() => handleSave('draft')}
-            className={buttonClassName}
+            className={`px-4 py-2 border rounded-md ${
+              theme === 'dark'
+                ? 'border-gray-800 hover:bg-gray-900'
+                : 'border-shopify-border hover:bg-shopify-surface'
+            }`}
           >
             Save as Draft
           </button>
           <button
             onClick={() => handleSave('published')}
-            className="px-4 py-2 bg-gray-900 text-white hover:bg-black"
+            className="px-4 py-2 bg-shopify-green text-white rounded-md hover:bg-shopify-green-dark"
           >
             Publish
           </button>
