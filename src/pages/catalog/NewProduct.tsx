@@ -180,26 +180,26 @@ const NewProduct = () => {
           {/* Taxes */}
           <div className="space-y-2">
             <label className="block text-sm font-medium">Taxes</label>
-            <div className="flex space-x-2">
+            <div className="grid grid-cols-12 gap-2">
               <input
                 type="text"
                 value={newTaxName}
                 onChange={(e) => setNewTaxName(e.target.value)}
-                className={`${inputClassName} flex-1`}
+                className={`${inputClassName} col-span-7`}
                 placeholder="Tax name"
               />
               <input
                 type="number"
                 value={newTaxPercentage}
                 onChange={(e) => setNewTaxPercentage(e.target.value)}
-                className={`${inputClassName} w-32`}
+                className={`${inputClassName} col-span-4`}
                 placeholder="Percentage"
                 min="0"
                 step="0.01"
               />
               <button
                 onClick={handleAddTax}
-                className={`p-2 border rounded-md ${
+                className={`p-2 border rounded-md col-span-1 ${
                   theme === 'dark'
                     ? 'border-gray-800 hover:bg-gray-900'
                     : 'border-shopify-border hover:bg-shopify-surface'
@@ -242,9 +242,10 @@ const NewProduct = () => {
           </div>
         </div>
 
+
         {/* Stock */}
         <div>
-          <label className="block text-sm font-medium mb-1">Initial Stock</label>
+    <label className="block text-sm font-medium mb-1">Initial Stock</label>
           <input
             type="number"
             value={stock}
