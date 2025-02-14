@@ -1,9 +1,12 @@
-import React from 'react';
-import { Search, Sun, Moon, MessageCircle, Bell } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Sun, Moon, MessageCircle, Bell, User } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const user = {
     name: 'John Doe',
     email: 'john@example.com',
@@ -58,11 +61,14 @@ const Navbar = () => {
         </button>
 
         <div className="relative">
-          <button className={`flex items-center space-x-3 p-2 border ${
-            theme === 'dark' 
-              ? 'border-gray-800 hover:bg-gray-900' 
-              : 'border-gray-200 hover:bg-gray-50'
-          }`}>
+          <button 
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className={`flex items-center space-x-3 p-2 border ${
+              theme === 'dark' 
+                ? 'border-gray-800 hover:bg-gray-900' 
+                : 'border-gray-200 hover:bg-gray-50'
+            }`}
+          >
             <img
               src={user.avatar}
               alt={user.name}
@@ -73,6 +79,27 @@ const Navbar = () => {
               <p className="text-xs text-gray-500">{user.email}</p>
             </div>
           </button>
+
+          {showProfileMenu && (
+            <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg ${
+              theme === 'dark' ? 'bg-gray-900' : 'bg-white'
+            } ring-1 ring-black ring-opacity-5`}>
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    navigate('/profile');
+                    setShowProfileMenu(false);
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm ${
+                    theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
+                  }`}
+                >
+                  <User className="inline-block w-4 h-4 mr-2" />
+                  Profile
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </nav>

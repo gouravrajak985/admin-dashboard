@@ -13,7 +13,7 @@ const NewCustomer = () => {
   const [address, setAddress] = useState('');
   const [status, setStatus] = useState('Active');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent, isDraft: boolean = false) => {
     e.preventDefault();
     // Add customer creation logic here
     console.log({
@@ -22,9 +22,10 @@ const NewCustomer = () => {
       email,
       phone,
       address,
-      status
+      status,
+      isDraft
     });
-    navigate('/customers/manage');
+    navigate('/customers/manage-customers');
   };
 
   const inputClassName = `w-full p-3 border ${
@@ -51,7 +52,7 @@ const NewCustomer = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-6 space-y-6">
+      <form onSubmit={(e) => handleSubmit(e)} className="p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium mb-2">Customer Name</label>
@@ -118,7 +119,19 @@ const NewCustomer = () => {
           </select>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end space-x-4">
+          <button
+            type="button"
+            onClick={(e) => handleSubmit(e, true)}
+            className={`px-6 py-3 border ${
+              theme === 'dark'
+                ? 'border-gray-800 hover:bg-gray-900'
+                : 'border-gray-200 hover:bg-gray-50'
+            } flex items-center`}
+          >
+            <Save className="h-5 w-5 mr-2" />
+            Save as Draft
+          </button>
           <button
             type="submit"
             className={`px-6 py-3 ${

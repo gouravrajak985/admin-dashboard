@@ -9,6 +9,7 @@ import ManageOrders from './pages/orders/ManageOrders';
 import NewOrder from './pages/orders/NewOrder';
 import NewCustomer from './pages/customers/NewCustomer';
 import ManageCustomers from './pages/customers/ManageCustomers';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/orders/new-order" element={<NewOrder />} />
             <Route path="/customers/new-customer" element={<NewCustomer />} />
             <Route path="/customers/manage-customers" element={<ManageCustomers />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </DashboardLayout>
       </Router>

@@ -60,12 +60,14 @@ const ManageCustomers = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'Active' | 'Inactive' | ''>('');
 
   const filteredCustomers = customers.filter(customer => {
     const matchesSearch = customer.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           customer.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           customer.email.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
+                         customer.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         customer.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = !statusFilter || customer.status === statusFilter;
+    return matchesSearch && matchesStatus;
   });
 
   return (
@@ -103,8 +105,21 @@ const ManageCustomers = () => {
             </div>
           </div>
           <div className="flex space-x-4 w-full md:w-auto">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as 'Active' | 'Inactive' | '')}
+              className={`px-4 py-2 border ${
+                theme === 'dark' 
+                  ? 'bg-gray-900 border-gray-800' 
+                  : 'bg-white border-gray-200'
+              }`}
+            >
+              <option value="">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
             <button 
-              onClick={() => navigate('/customers/new')}
+              onClick={() => navigate('/customers/new-customer')}
               className={`px-4 py-2 ${
                 theme === 'dark' ? 'bg-gray-900' : 'bg-black'
               } text-white hover:opacity-90`}
