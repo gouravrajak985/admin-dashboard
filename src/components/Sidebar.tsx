@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronDown, Home, ShoppingBag, Package, Users, LogOut, Tag } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
 import LogoutDialog from './LogoutDialog';
 
 const MenuItem = ({ 
@@ -83,6 +84,8 @@ const MenuItem = ({
 const Sidebar = () => {
   const { theme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut, profile } = useAuthStore();
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   
@@ -90,9 +93,13 @@ const Sidebar = () => {
     setOpenMenuId(openMenuId === id ? null : id);
   };
 
-  const handleLogout = () => {
-    // Implement logout logic here
-    console.log('Logging out...');
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
     setIsLogoutDialogOpen(false);
   };
 
@@ -162,8 +169,19 @@ const Sidebar = () => {
             />
           </nav>
 
-          {/* Logout Button */}
+          {/* User Info and Logout Button */}
           <div className="p-4 border-t border-shopify-border dark:border-gray-800">
+            <div className="mb-4 flex items-center">
+              <img
+                src={profile?.avatar_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'}
+                alt={profile?.name}
+                className="w-10 h-10 rounded-full mr-3"
+              />
+              <div>
+                <p className="font-medium">{profile?.name}</p>
+                <p className="text-sm text-gray-500">{profile?.email}</p>
+              </div>
+            </div>
             <button
               onClick={() => setIsLogoutDialogOpen(true)}
               className={`w-full flex items-center px-4 py-3 text-sm border rounded-md ${

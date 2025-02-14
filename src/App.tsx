@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthGuard } from './components/AuthGuard';
 import DashboardLayout from './layouts/DashboardLayout';
+import Login from './pages/auth/Login';
+import Signup from './pages/auth/Signup';
 import Home from './pages/Home';
 import ManageProducts from './pages/catalog/ManageProducts';
 import NewProduct from './pages/catalog/NewProduct';
@@ -14,39 +17,15 @@ import ManageDiscounts from './pages/discounts/ManageDiscounts';
 import CreateDiscount from './pages/discounts/CreateDiscount';
 
 function App() {
-  const [showMobileWarning, setShowMobileWarning] = useState(false);
-
-  useEffect(() => {
-    const checkScreenSize = () => {
-      if (window.innerWidth < 768) {
-        setShowMobileWarning(true);
-      } else {
-        setShowMobileWarning(false);
-      }
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
-
   return (
     <ThemeProvider>
-      {showMobileWarning && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/50">
-          <div className="bg-white rounded-lg p-6 max-w-md text-center">
-            <h2 className="text-xl font-bold mb-4">Mobile Access Restricted</h2>
-            <p className="text-gray-600 mb-4">
-              Please use a Laptop, Desktop, or tablet to access the seller dashboard. 
-              It is not supported on mobile devices yet.
-            </p>
-          </div>
-        </div>
-      )}
       <Router>
-        <DashboardLayout>
-          <Routes>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          
+          {/* Protected Routes */}
+          <Route element={<AuthGuard><DashboardLayout /></AuthGuard>}>
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<Home />} />
             <Route path="/catalog/manage-products" element={<ManageProducts />} />
@@ -58,11 +37,9 @@ function App() {
             <Route path="/discounts/manage" element={<ManageDiscounts />} />
             <Route path="/discounts/create" element={<CreateDiscount />} />
             <Route path="/profile" element={<Profile />} />
-          </Routes>
-        </DashboardLayout>
+          </Route>
+        </Routes>
       </Router>
     </ThemeProvider>
   );
 }
-
-export default App;

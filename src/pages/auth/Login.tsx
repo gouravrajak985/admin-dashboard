@@ -2,17 +2,37 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Lock } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuthStore } from '../../store/authStore';
 
 const Login = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const { signIn, user } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  React.useEffect(() => {
+    if (user) {
+      navigate('/home');
+    }
+  }, [user, navigate]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add login logic here
-    navigate('/dashboard');
+    setError('');
+    setIsLoading(true);
+
+    try {
+      await signIn(email, password);
+      navigate('/home');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred during login');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -29,6 +49,12 @@ const Login = () => {
           <h2 className="text-2xl font-bold mb-1">Admin Panel</h2>
           <p className="text-sm text-gray-500">Developed by Avirrav</p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
@@ -81,10 +107,17 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 flex items-center justify-center"
+            disabled={isLoading}
+            className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 flex items-center justify-center disabled:opacity-50"
           >
-            <Lock className="h-4 w-4 mr-2" />
-            Sign In
+            {isLoading ? (
+              <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              <>
+                <Lock className="h-4 w-4 mr-2" />
+                Sign In
+              </>
+            )}
           </button>
 
           <p className="text-center text-sm">

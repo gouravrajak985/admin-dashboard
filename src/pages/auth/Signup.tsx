@@ -2,21 +2,55 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutDashboard, UserPlus } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuthStore } from '../../store/authStore';
 
 const Signup = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const { signUp, user } = useAuthStore();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    phone: '',
+    location: ''
   });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignup = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  React.useEffect(() => {
+    if (user) {
+      navigate('/home');
+    }
+  }, [user, navigate]);
+
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add signup logic here
-    navigate('/login');
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await signUp(
+        formData.email,
+        formData.password,
+        formData.name,
+        formData.phone,
+        formData.location
+      );
+      navigate('/login');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred during signup');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -33,6 +67,12 @@ const Signup = () => {
           <h2 className="text-2xl font-bold mb-1">Admin Panel</h2>
           <p className="text-sm text-gray-500">Developed by Avirrav</p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSignup} className="space-y-6">
           <div>
@@ -63,6 +103,38 @@ const Signup = () => {
                   : 'bg-white border-gray-300'
               }`}
               placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Phone</label>
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className={`w-full p-3 rounded border ${
+                theme === 'dark' 
+                  ? 'bg-gray-800 border-gray-700' 
+                  : 'bg-white border-gray-300'
+              }`}
+              placeholder="Enter your phone number"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Location</label>
+            <input
+              type="text"
+              value={formData.location}
+              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              className={`w-full p-3 rounded border ${
+                theme === 'dark' 
+                  ? 'bg-gray-800 border-gray-700' 
+                  : 'bg-white border-gray-300'
+              }`}
+              placeholder="Enter your location"
               required
             />
           </div>
@@ -101,10 +173,17 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 flex items-center justify-center"
+            disabled={isLoading}
+            className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 flex items-center justify-center disabled:opacity-50"
           >
-            <UserPlus className="h-4 w-4 mr-2" />
-            Create Account
+            {isLoading ? (
+              <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              <>
+                <UserPlus className="h-4 w-4 mr-2" />
+                Create Account
+              </>
+            )}
           </button>
 
           <p className="text-center text-sm">
