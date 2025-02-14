@@ -8,17 +8,20 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useTheme();
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-black text-white' : 'bg-white text-black'}`}>
+    <div className={`min-h-screen ${
+      theme === 'dark' 
+        ? 'bg-gray-900 text-white' 
+        : 'bg-shopify-surface text-shopify-text'
+    }`}>
       <Navbar />
       <div className="flex">
         <Sidebar />
         <main className="flex-1 p-6 ml-64 mt-16">
-          <div className="mb-6 text-center">
-            <div className="flex items-center justify-center mb-2">
-              <LayoutDashboard className="h-8 w-8 mr-2" />
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <LayoutDashboard className="h-8 w-8 mr-2 text-shopify-green" />
               <h1 className="text-2xl font-bold">Admin Panel</h1>
             </div>
-            {/* <p className="text-sm text-gray-500">Developed by Avirrav</p> */}
           </div>
           {children}
         </main>

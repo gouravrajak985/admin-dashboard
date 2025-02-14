@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, LayoutDashboard, ShoppingBag, Package, Users, LogOut } from 'lucide-react';
+import { ChevronDown, Home, ShoppingBag, Package, Users, LogOut, Tag } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import LogoutDialog from './LogoutDialog';
@@ -45,8 +45,8 @@ const MenuItem = ({
         onClick={handleClick}
         className={`w-full flex items-center px-4 py-3 text-sm border-l-2 ${
           isActive 
-            ? `${theme === 'dark' ? 'border-white bg-gray-900' : 'border-black bg-gray-100'} ` 
-            : `border-transparent ${theme === 'dark' ? 'hover:bg-gray-900' : 'hover:bg-gray-50'}`
+            ? `${theme === 'dark' ? 'border-white bg-gray-900' : 'border-shopify-green bg-shopify-surface'} ` 
+            : `border-transparent ${theme === 'dark' ? 'hover:bg-gray-900' : 'hover:bg-shopify-surface'}`
         }`}
       >
         <Icon className="h-5 w-5 mr-3" />
@@ -56,7 +56,7 @@ const MenuItem = ({
         )}
       </button>
       {isOpen && subItems.length > 0 && (
-        <div className="ml-8 border-l border-gray-200 dark:border-gray-700">
+        <div className="ml-8 border-l border-shopify-border dark:border-gray-700">
           {subItems.map((item, index) => (
             <button
               key={item}
@@ -65,10 +65,10 @@ const MenuItem = ({
                 isSubItemActive(subItemPaths[index])
                   ? theme === 'dark'
                     ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-black'
+                    : 'bg-shopify-surface text-shopify-text'
                   : theme === 'dark'
                     ? 'hover:bg-gray-900'
-                    : 'hover:bg-gray-50'
+                    : 'hover:bg-shopify-surface'
               }`}
             >
               {item}
@@ -101,10 +101,10 @@ const Sidebar = () => {
       <aside className={`fixed left-0 top-0 w-64 h-screen border-r ${
         theme === 'dark' 
           ? 'bg-black border-gray-800' 
-          : 'bg-white border-gray-200'
+          : 'bg-white border-shopify-border'
       }`}>
         {/* Header */}
-        <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-800">
+        <div className="h-16 flex items-center px-6 border-b border-shopify-border dark:border-gray-800">
           <h1 className="text-xl font-bold">Avirrav Ecommerce</h1>
         </div>
 
@@ -112,13 +112,13 @@ const Sidebar = () => {
         <div className="flex flex-col h-[calc(100vh-4rem)]">
           <nav className="flex-1 py-4">
             <MenuItem 
-              icon={LayoutDashboard} 
-              label="Dashboard" 
-              isActive={location.pathname === '/dashboard'}
-              path="/dashboard"
-              id="dashboard"
+              icon={Home} 
+              label="Home" 
+              isActive={location.pathname === '/home'}
+              path="/home"
+              id="home"
               onToggle={handleMenuToggle}
-              isOpen={openMenuId === 'dashboard'}
+              isOpen={openMenuId === 'home'}
             />
             <MenuItem 
               icon={Package} 
@@ -150,16 +150,26 @@ const Sidebar = () => {
               onToggle={handleMenuToggle}
               isOpen={openMenuId === 'customers'}
             />
+            <MenuItem 
+              icon={Tag} 
+              label="Discounts" 
+              subItems={['Manage Discounts', 'Create Discount']}
+              subItemPaths={['/discounts/manage', '/discounts/create']}
+              isActive={location.pathname.startsWith('/discounts')}
+              id="discounts"
+              onToggle={handleMenuToggle}
+              isOpen={openMenuId === 'discounts'}
+            />
           </nav>
 
           {/* Logout Button */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+          <div className="p-4 border-t border-shopify-border dark:border-gray-800">
             <button
               onClick={() => setIsLogoutDialogOpen(true)}
-              className={`w-full flex items-center px-4 py-3 text-sm border ${
+              className={`w-full flex items-center px-4 py-3 text-sm border rounded-md ${
                 theme === 'dark'
                   ? 'border-gray-800 hover:bg-gray-900'
-                  : 'border-gray-200 hover:bg-gray-50'
+                  : 'border-shopify-border hover:bg-shopify-surface'
               }`}
             >
               <LogOut className="h-5 w-5 mr-3" />
