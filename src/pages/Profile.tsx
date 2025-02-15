@@ -13,7 +13,8 @@ const Profile = () => {
     name: profile?.name || '',
     phone: profile?.phone || '',
     location: profile?.location || '',
-    avatar_url: profile?.avatar_url || ''
+    avatar_url: profile?.avatar_url || '',
+    email: profile?.email || '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -171,10 +172,11 @@ const Profile = () => {
                   <button
                     type="submit"
                     className={`px-6 py-3 ${
-                      theme === 'dark' ?  theme === 'dark' ? 'bg-gray-900' : 'bg-black'
+                      theme === 'dark' ? 'bg-gray-900' : 'bg-black'
                     } text-white hover:opacity-90 flex items-center disabled:opacity-50`}
                     disabled={isLoading}
                   >
+                    {isLoading ? (
                       <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     ) : (
                       <>

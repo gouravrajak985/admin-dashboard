@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 interface Profile {
   id: string;
   name: string;
+  email: string;
   phone: string | null;
   location: string | null;
   avatar_url: string | null;

@@ -16,7 +16,7 @@ import Profile from './pages/Profile';
 import ManageDiscounts from './pages/discounts/ManageDiscounts';
 import CreateDiscount from './pages/discounts/CreateDiscount';
 
-function App() {
+const App = () => {
   return (
     <ThemeProvider>
       <Router>
@@ -37,9 +37,12 @@ function App() {
             <Route path="/discounts/manage" element={<ManageDiscounts />} />
             <Route path="/discounts/create" element={<CreateDiscount />} />
             <Route path="/profile" element={<Profile />} />
+          
           </Route>
         </Routes>
       </Router>
     </ThemeProvider>
   );
-}
+};
+
+export default App;

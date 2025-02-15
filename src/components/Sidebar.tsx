@@ -172,11 +172,6 @@ const Sidebar = () => {
           {/* User Info and Logout Button */}
           <div className="p-4 border-t border-shopify-border dark:border-gray-800">
             <div className="mb-4 flex items-center">
-              <img
-                src={profile?.avatar_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'}
-                alt={profile?.name}
-                className="w-10 h-10 rounded-full mr-3"
-              />
               <div>
                 <p className="font-medium">{profile?.name}</p>
                 <p className="text-sm text-gray-500">{profile?.email}</p>

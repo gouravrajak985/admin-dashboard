@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Search, Sun, Moon, MessageCircle, Bell, User } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import Profile from '../pages/Profile';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const { profile } = useAuthStore();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const user = {
     name: 'John Doe',
@@ -77,8 +80,8 @@ const Navbar = () => {
               className="h-8 w-8 rounded-full"
             />
             <div className="text-left hidden md:block">
-              <p className="text-sm font-medium">{user.name}</p>
-              <p className="text-xs text-shopify-text-secondary">{user.email}</p>
+              <p className="text-sm font-medium">{profile?.name}</p>
+              <p className="text-xs text-shopify-text-secondary">{profile?.email}</p>
             </div>
           </button>
 
