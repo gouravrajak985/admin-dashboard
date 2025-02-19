@@ -1,108 +1,64 @@
-import React, { useState } from 'react';
-import { ExternalLink, Edit, Trash2, ArrowLeft, Search, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
+import { ExternalLink, Edit, Trash2, ArrowLeft, Search, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useProductStore } from '../../store/productStore';
+import type { Product } from '../../types/database';
 
-interface Product {
-  id: number;
-  image: string;
-  title: string;
-  price: number;
-  stock: number;
-  status: string;
-  sku: string;
-  description?: string;
-  category?: string;
-  brand?: string;
-  dimensions?: string;
-  weight?: string;
-}
-
-const products: Product[] = [
-  {
-    id: 1,
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80',
-    title: 'Premium Headphones',
-    price: 199.99,
-    stock: 45,
-    status: 'Live',
-    sku: 'HDX-100',
-    description: 'High-quality wireless headphones with noise cancellation',
-    category: 'Electronics',
-    brand: 'AudioTech',
-    dimensions: '7.5 x 6.3 x 3.2 inches',
-    weight: '0.55 lbs'
-  },
-  {
-    id: 2,
-    image: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&q=80',
-    title: 'Wireless Mouse',
-    price: 49.99,
-    stock: 32,
-    status: 'Saved',
-    sku: 'WM-200',
-    description: 'Ergonomic wireless mouse with precision tracking',
-    category: 'Electronics',
-    brand: 'TechGear',
-    dimensions: '4.5 x 2.8 x 1.5 inches',
-    weight: '0.25 lbs'
-  },
-  {
-    id: 3,
-    image: 'https://images.unsplash.com/photo-1527814050087-3793815479db?w=200&q=80',
-    title: 'Mechanical Keyboard',
-    price: 159.99,
-    stock: 15,
-    status: 'Live',
-    sku: 'KB-300',
-    description: 'Mechanical gaming keyboard with RGB backlight',
-    category: 'Electronics',
-    brand: 'GameTech',
-    dimensions: '17.3 x 5.1 x 1.4 inches',
-    weight: '2.1 lbs'
-  },
-  {
-    id: 4,
-    image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=200&q=80',
-    title: 'Gaming Monitor',
-    price: 299.99,
-    stock: 8,
-    status: 'Saved',
-    sku: 'GM-400',
-    description: '27-inch gaming monitor with 144Hz refresh rate',
-    category: 'Electronics',
-    brand: 'ViewTech',
-    dimensions: '24.1 x 21.2 x 7.9 inches',
-    weight: '12.3 lbs'
-  }
-];
+const getStatusColor = (status: Product['status']) => {
+  return status === 'Live' 
+    ? 'bg-green-100 text-green-800' 
+    : 'bg-yellow-100 text-yellow-800';
+};
 
 const ManageProducts = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const { products, isLoading, error, fetchProducts, updateProduct, deleteProduct } = useProductStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'Live' | 'Saved' | ''>('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [editedProduct, setEditedProduct] = useState<Product | null>(null);
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.sku.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = !statusFilter || product.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleEditClick = (product: Product) => {
     setSelectedProduct(product);
     setEditedProduct({ ...product });
   };
 
-  const handleUpdateProduct = () => {
+  const handleUpdateProduct = async () => {
     if (editedProduct) {
-      // Here you would typically make an API call to update the product
-      console.log('Updating product:', editedProduct);
-      setSelectedProduct(null);
-      setEditedProduct(null);
+      try {
+        await updateProduct(editedProduct.id, {
+          title: editedProduct.title,
+          description: editedProduct.description,
+          price: editedProduct.price,
+          stock: editedProduct.stock,
+          status: editedProduct.status,
+          sku: editedProduct.sku,
+          category: editedProduct.category,
+          brand: editedProduct.brand,
+          dimensions: editedProduct.dimensions,
+          weight: editedProduct.weight
+        });
+        setSelectedProduct(null);
+        setEditedProduct(null);
+      } catch (error) {
+        console.error('Error updating product:', error);
+      }
+    }
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    if (confirm('Are you sure you want to delete this product?')) {
+      try {
+        await deleteProduct(id);
+      } catch (error) {
+        console.error('Error deleting product:', error);
+      }
     }
   };
 
@@ -111,6 +67,31 @@ const ManageProducts = () => {
       ? 'bg-gray-900 border-gray-800'
       : 'bg-white border-shopify-border'
   }`;
+
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = 
+      product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.sku?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      false;
+    const matchesStatus = !statusFilter || product.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-shopify-green border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 text-red-500">
+        Error loading products: {error}
+      </div>
+    );
+  }
 
   return (
     <div className={`border rounded-lg ${
@@ -138,7 +119,7 @@ const ManageProducts = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <img
-                    src={editedProduct?.image}
+                    src={editedProduct?.image_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80'}
                     alt={editedProduct?.title}
                     className="w-full h-64 object-cover rounded-lg"
                   />
@@ -190,7 +171,7 @@ const ManageProducts = () => {
                     <label className="block text-sm font-medium mb-1">Status</label>
                     <select
                       value={editedProduct?.status}
-                      onChange={(e) => setEditedProduct(prev => prev ? { ...prev, status: e.target.value } : null)}
+                      onChange={(e) => setEditedProduct(prev => prev ? { ...prev, status: e.target.value as Product['status'] } : null)}
                       className={inputClassName}
                     >
                       <option value="Live">Live</option>
@@ -307,7 +288,7 @@ const ManageProducts = () => {
           <div className="flex space-x-4 w-full md:w-auto">
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => setStatusFilter(e.target.value as 'Live' | 'Saved' | '')}
               className={`px-4 py-2 border rounded-md ${
                 theme === 'dark' 
                   ? 'bg-gray-900 border-gray-800' 
@@ -355,7 +336,7 @@ const ManageProducts = () => {
                   <div className="flex items-center">
                     <img
                       className="h-16 w-16 object-cover rounded-md border dark:border-gray-800"
-                      src={product.image}
+                      src={product.image_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80'}
                       alt={product.title}
                     />
                     <div className="ml-4">
@@ -375,11 +356,7 @@ const ManageProducts = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    product.status === 'Live'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(product.status)}`}>
                     {product.status}
                   </span>
                 </td>
@@ -403,6 +380,7 @@ const ManageProducts = () => {
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 
+                      onClick={() => handleDeleteProduct(product.id)}
                       className={`p-2 border rounded-md ${
                         theme === 'dark' ? 'border-gray-800 hover:bg-gray-800' : 'border-shopify-border hover:bg-shopify-surface'
                       }`}
