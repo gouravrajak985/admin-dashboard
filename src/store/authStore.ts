@@ -1,7 +1,18 @@
+/**
+ * Authentication Store
+ * 
+ * This store manages the authentication state of the application using Zustand.
+ * It handles:
+ * - User authentication state
+ * - User profile management
+ * - Sign up, sign in, and sign out operations
+ * - Profile updates
+ */
 import { create } from 'zustand';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
+// Profile interface defining user profile data structure
 interface Profile {
   id: string;
   name: string;
@@ -13,6 +24,7 @@ interface Profile {
   updated_at: string;
 }
 
+// Auth store state and actions interface
 interface AuthState {
   user: User | null;
   profile: Profile | null;
@@ -31,10 +43,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   profile: null,
   isLoading: true,
+
+  // State setters
   setUser: (user) => set({ user }),
   setProfile: (profile) => set({ profile }),
   setIsLoading: (isLoading) => set({ isLoading }),
 
+  // Sign up new user
   signUp: async (email, password, name, phone, location) => {
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
@@ -54,6 +69,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
+  // Sign in existing user
   signIn: async (email, password) => {
     try {
       const { data: { user }, error } = await supabase.auth.signInWithPassword({
@@ -65,6 +81,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (user) {
         set({ user });
         
+        // Fetch user profile after successful sign in
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
@@ -79,12 +96,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
+  // Sign out user
   signOut: async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     set({ user: null, profile: null });
   },
 
+  // Load user session and profile
   loadUser: async () => {
     try {
       set({ isLoading: true });
@@ -94,6 +113,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       if (user) {
         set({ user });
+        // Fetch user profile
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
@@ -113,6 +133,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
+  // Update user profile
   updateProfile: async (data) => {
     const { user } = get();
     if (!user) throw new Error('No user logged in');

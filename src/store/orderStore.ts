@@ -1,3 +1,16 @@
+/**
+ * Order Store
+ * 
+ * Manages the global state for orders using Zustand.
+ * Handles all order-related operations including:
+ * - Fetching orders
+ * - Creating new orders with items
+ * - Updating order status
+ * - Deleting orders
+ * - Retrieving order items
+ * 
+ * Uses Supabase for data persistence and real-time updates.
+ */
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
 import type { Order, OrderItem } from '../types/database';
@@ -14,10 +27,12 @@ interface OrderState {
 }
 
 export const useOrderStore = create<OrderState>((set, get) => ({
+  // Initial state
   orders: [],
   isLoading: false,
   error: null,
 
+  // Fetch all orders
   fetchOrders: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -35,10 +50,11 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     }
   },
 
+  // Create new order with items
   createOrder: async (order, items) => {
     set({ isLoading: true, error: null });
     try {
-      // Start a Supabase transaction
+      // Create the order first
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert([order])
@@ -47,7 +63,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
 
       if (orderError) throw orderError;
 
-      // Add order items
+      // Add order items with the new order ID
       const orderItems = items.map(item => ({
         ...item,
         order_id: newOrder.id
@@ -59,6 +75,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
 
       if (itemsError) throw itemsError;
 
+      // Update local state with new order
       set(state => ({
         orders: [newOrder as Order, ...state.orders]
       }));
@@ -72,6 +89,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     }
   },
 
+  // Update existing order
   updateOrder: async (id, order) => {
     set({ isLoading: true, error: null });
     try {
@@ -82,6 +100,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
 
       if (error) throw error;
 
+      // Update local state
       set(state => ({
         orders: state.orders.map(o => 
           o.id === id ? { ...o, ...order } : o
@@ -95,6 +114,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     }
   },
 
+  // Delete order
   deleteOrder: async (id) => {
     set({ isLoading: true, error: null });
     try {
@@ -105,6 +125,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
 
       if (error) throw error;
 
+      // Update local state
       set(state => ({
         orders: state.orders.filter(o => o.id !== id)
       }));
@@ -116,6 +137,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     }
   },
 
+  // Get items for a specific order
   getOrderItems: async (orderId) => {
     try {
       const { data, error } = await supabase

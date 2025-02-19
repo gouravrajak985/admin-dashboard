@@ -1,3 +1,15 @@
+/**
+ * Product Store
+ * 
+ * Manages the global state for products using Zustand.
+ * Handles all product-related operations including:
+ * - Fetching products
+ * - Creating new products
+ * - Updating existing products
+ * - Deleting products
+ * 
+ * Uses Supabase for data persistence and real-time updates.
+ */
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
 import type { Product } from '../types/database';
@@ -13,10 +25,12 @@ interface ProductState {
 }
 
 export const useProductStore = create<ProductState>((set, get) => ({
+  // Initial state
   products: [],
   isLoading: false,
   error: null,
 
+  // Fetch all products
   fetchProducts: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -34,6 +48,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
+  // Create new product
   createProduct: async (product) => {
     set({ isLoading: true, error: null });
     try {
@@ -46,6 +61,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
       if (error) throw error;
       
       const newProduct = data as Product;
+      // Update local state with new product
       set(state => ({
         products: [newProduct, ...state.products]
       }));
@@ -59,6 +75,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
+  // Update existing product
   updateProduct: async (id, product) => {
     set({ isLoading: true, error: null });
     try {
@@ -69,6 +86,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
 
       if (error) throw error;
 
+      // Update local state
       set(state => ({
         products: state.products.map(p => 
           p.id === id ? { ...p, ...product } : p
@@ -82,6 +100,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
+  // Delete product
   deleteProduct: async (id) => {
     set({ isLoading: true, error: null });
     try {
@@ -92,6 +111,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
 
       if (error) throw error;
 
+      // Update local state
       set(state => ({
         products: state.products.filter(p => p.id !== id)
       }));

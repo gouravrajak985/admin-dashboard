@@ -1,3 +1,18 @@
+/**
+ * Stat Card Component
+ * 
+ * A reusable card component for displaying statistics with:
+ * - Title
+ * - Value
+ * - Change percentage
+ * - Icon
+ * - Positive/negative indication
+ * 
+ * Features:
+ * - Responsive design
+ * - Theme support
+ * - Visual indicators for positive/negative changes
+ */
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -18,6 +33,7 @@ const StatCard = ({ title, value, change, isPositive, icon: Icon }: StatCardProp
         ? 'bg-gray-900 border-gray-800' 
         : 'bg-white border-shopify-border'
     }`}>
+      {/* Header with title and icon */}
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-shopify-text-secondary">{title}</p>
@@ -31,6 +47,8 @@ const StatCard = ({ title, value, change, isPositive, icon: Icon }: StatCardProp
           <Icon className="h-6 w-6 text-shopify-green" />
         </div>
       </div>
+
+      {/* Change indicator */}
       <div className="mt-4">
         <span className={`text-sm font-medium ${isPositive ? 'text-shopify-green' : 'text-red-500'}`}>
           {change}

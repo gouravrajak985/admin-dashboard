@@ -1,3 +1,14 @@
+/**
+ * Logout Dialog Component
+ * 
+ * A modal dialog that confirms user logout action.
+ * 
+ * Features:
+ * - Backdrop with blur effect
+ * - Theme support
+ * - Accessible button controls
+ * - Responsive design
+ */
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -10,14 +21,18 @@ interface LogoutDialogProps {
 const LogoutDialog = ({ isOpen, onClose, onConfirm }: LogoutDialogProps) => {
   const { theme } = useTheme();
 
+  // Don't render if dialog is not open
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      {/* Backdrop with blur effect */}
+      <div 
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+        onClick={onClose}
+      />
       
-      {/* Dialog */}
+      {/* Dialog Content */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div className={`${
           theme === 'dark' ? 'bg-gray-900' : 'bg-white'
@@ -25,6 +40,7 @@ const LogoutDialog = ({ isOpen, onClose, onConfirm }: LogoutDialogProps) => {
           <h3 className="text-xl font-semibold mb-4">Confirm Logout</h3>
           <p className="text-gray-500 mb-6">Are you sure you want to log out?</p>
           
+          {/* Action Buttons */}
           <div className="flex justify-end space-x-4">
             <button
               onClick={onClose}
