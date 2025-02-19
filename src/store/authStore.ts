@@ -55,15 +55,27 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signIn: async (email, password) => {
-    const { data: { user }, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    try {
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
-    if (error) throw error;
-    if (user) {
-      set({ user });
-      await get().loadUser();
+      if (error) throw error;
+      if (user) {
+        set({ user });
+        
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (profileError) throw profileError;
+        set({ profile });
+      }
+    } catch (error) {
+      throw error;
     }
   },
 
@@ -79,9 +91,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       
       if (authError) throw authError;
-      set({ user });
 
       if (user) {
+        set({ user });
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
@@ -90,7 +102,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         if (profileError) throw profileError;
         set({ profile });
+      } else {
+        set({ user: null, profile: null });
       }
+    } catch (error) {
+      console.error('Error loading user:', error);
+      set({ user: null, profile: null });
     } finally {
       set({ isLoading: false });
     }

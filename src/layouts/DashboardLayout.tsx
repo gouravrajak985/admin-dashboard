@@ -1,10 +1,11 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import { useTheme } from '../context/ThemeContext';
 import { LayoutDashboard } from 'lucide-react';
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const DashboardLayout = () => {
   const { theme } = useTheme();
 
   return (
@@ -23,7 +24,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               <h1 className="text-2xl font-bold">Admin Panel</h1>
             </div>
           </div>
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>

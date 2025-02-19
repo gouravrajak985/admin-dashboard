@@ -1,14 +1,10 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
-export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading, loadUser } = useAuthStore();
+export const AuthGuard = () => {
+  const { user, isLoading } = useAuthStore();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    loadUser();
-  }, [loadUser]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -26,5 +22,5 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
   if (!user) return null;
 
-  return <>{children}</>;
+  return <Outlet />;
 };

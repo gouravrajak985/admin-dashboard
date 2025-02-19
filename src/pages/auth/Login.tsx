@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Lock } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
@@ -7,18 +7,17 @@ import { useAuthStore } from '../../store/authStore';
 const Login = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
-  const { signIn, user } = useAuthStore();
+  const { signIn, user, isLoading: authLoading } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect if already logged in
-  React.useEffect(() => {
-    if (user) {
+  useEffect(() => {
+    if (user && !authLoading) {
       navigate('/home');
     }
-  }, [user, navigate]);
+  }, [user, authLoading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

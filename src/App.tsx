@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthGuard } from './components/AuthGuard';
@@ -15,8 +15,15 @@ import ManageCustomers from './pages/customers/ManageCustomers';
 import Profile from './pages/Profile';
 import ManageDiscounts from './pages/discounts/ManageDiscounts';
 import CreateDiscount from './pages/discounts/CreateDiscount';
+import { useAuthStore } from './store/authStore';
 
 const App = () => {
+  const { loadUser } = useAuthStore();
+
+  useEffect(() => {
+    loadUser();
+  }, [loadUser]);
+
   return (
     <ThemeProvider>
       <Router>
@@ -25,19 +32,20 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           
           {/* Protected Routes */}
-          <Route element={<AuthGuard><DashboardLayout /></AuthGuard>}>
-            <Route path="/" element={<Navigate to="/home" replace />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/catalog/manage-products" element={<ManageProducts />} />
-            <Route path="/catalog/new-product" element={<NewProduct />} />
-            <Route path="/orders/manage-orders" element={<ManageOrders />} />
-            <Route path="/orders/new-order" element={<NewOrder />} />
-            <Route path="/customers/new-customer" element={<NewCustomer />} />
-            <Route path="/customers/manage-customers" element={<ManageCustomers />} />
-            <Route path="/discounts/manage" element={<ManageDiscounts />} />
-            <Route path="/discounts/create" element={<CreateDiscount />} />
-            <Route path="/profile" element={<Profile />} />
-          
+          <Route element={<AuthGuard />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/" element={<Navigate to="/home" replace />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/catalog/manage-products" element={<ManageProducts />} />
+              <Route path="/catalog/new-product" element={<NewProduct />} />
+              <Route path="/orders/manage-orders" element={<ManageOrders />} />
+              <Route path="/orders/new-order" element={<NewOrder />} />
+              <Route path="/customers/new-customer" element={<NewCustomer />} />
+              <Route path="/customers/manage-customers" element={<ManageCustomers />} />
+              <Route path="/discounts/manage" element={<ManageDiscounts />} />
+              <Route path="/discounts/create" element={<CreateDiscount />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
           </Route>
         </Routes>
       </Router>
